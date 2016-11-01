@@ -6,7 +6,7 @@ using System.Data.Entity;
 
 namespace WebApi1.Models
 {
-    public class UserContext:dbc
+    public class UserContext:DbContext
     {
     }
 }
