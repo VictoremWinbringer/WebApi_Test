@@ -10,6 +10,7 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using SPA.Models;
 using System.Web;
+using System.Threading.Tasks;
 
 namespace SPA.Controllers
 {
@@ -18,27 +19,26 @@ namespace SPA.Controllers
         private UnitOfWork db = new UnitOfWork();
 
         // GET: api/Users
-        public IEnumerable<User> GetUsers()
+        public async Task<IEnumerable<User>> GetUsers()
         {
-            return db.Users.GetAll();
+            return await db.Users.GetAll();
         }
 
         // GET: api/Users/5
         [ResponseType(typeof(User))]
-        public IHttpActionResult GetUser(int id)
+        public async Task<IHttpActionResult> GetUser(int id)
         {
-            User user = db.Users.Get(id);
+            User user = await db.Users.Get(id);
             if (user == null)
             {
                 return NotFound();
             }
-
             return Ok(user);
         }
 
         // PUT: api/Users/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutUser(int id, User user)
+        public async Task<IHttpActionResult> PutUser(int id, User user)
         {
             if (!ModelState.IsValid)
             {
@@ -50,15 +50,24 @@ namespace SPA.Controllers
                 return BadRequest();
             }
 
-            db.Users.Update(user);
-           
+
+            try
+            {
+                await db.Users.Update(user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+
+            }
+
 
             return StatusCode(HttpStatusCode.NoContent);
         }
 
         // POST: api/Users
         [ResponseType(typeof(User))]
-        public IHttpActionResult PostUser(User user)
+        public async Task<IHttpActionResult> PostUser(User user)
         {
             if (!ModelState.IsValid)
             {
@@ -66,46 +75,40 @@ namespace SPA.Controllers
             }
             try
             {
-                db.Users.Create(user);
+                await db.Users.Create(user);
             }
             catch (Exception ex)
             {
 
                 return BadRequest(ex.Message);
             }
-            
+
 
             return CreatedAtRoute("DefaultApi", new { id = user.Id }, user);
         }
 
         // DELETE: api/Users/5
         [ResponseType(typeof(User))]
-        public IHttpActionResult DeleteUser(int id)
+        public async Task<IHttpActionResult> DeleteUser(int id)
         {
-            User user = db.Users.Find(id);
+            User user = await db.Users.Get(id);
             if (user == null)
             {
                 return NotFound();
             }
 
-            db.Users.Remove(user);
-            db.SaveChanges();
+            try
+            {
+                await db.Users.Delete(id);
+            }
+            catch (Exception ex)
+            {
 
+                return BadRequest(ex.Message);
+            }
             return Ok(user);
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
 
-        private bool UserExists(int id)
-        {
-            return db.Users.Count(e => e.Id == id) > 0;
-        }
     }
 }
