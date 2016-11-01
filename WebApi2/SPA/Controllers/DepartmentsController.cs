@@ -16,13 +16,20 @@ namespace SPA.Models
     {
         private UnitOfWork db = new UnitOfWork();
 
-        // GET: api/Departments
+        /// <summary>
+        /// Получает списко департаментов
+        /// </summary>
+        /// <returns> Список департаметнов </returns>
         public async Task<IEnumerable<Department>> GetDepartments()
         {
             return await db.Departments.GetAll();
         }
 
-        // GET: api/Departments/5
+        /// <summary>
+        /// Возврашает департамент в формате JSON
+        /// </summary>
+        /// <param name="id">id департамента в БД</param>
+        /// <returns>Департамент</returns>
         [ResponseType(typeof(Department))]
         public async Task<IHttpActionResult> GetDepartment(int id)
         {
