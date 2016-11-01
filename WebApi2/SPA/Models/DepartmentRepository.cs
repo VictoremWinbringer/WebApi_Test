@@ -1,35 +1,85 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace SPA.Models
 {
     public class DepartmentRepository : IRepository<Department>
     {
-        public void Create(Department item)
+        const string Url = "http://localhost:53669/api/Departments/";
+
+        private HttpClient GetClient()
         {
-            throw new NotImplementedException();
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+            return client;
         }
 
-        public void Delete(int id)
+        public async Task Create(Department item)
         {
-            throw new NotImplementedException();
+            using (HttpClient client = GetClient())
+            {
+                var response = await client.PostAsync(Url,
+                    new StringContent(
+                        JsonConvert.SerializeObject(item),
+                        Encoding.UTF8, "application/json"));
+
+
+                if (response.StatusCode != HttpStatusCode.OK)
+                    throw new Exception(response.StatusCode + " " + "Не удалось создать Департамент");
+            }
         }
 
-        public Department Get(int id)
+        public async Task Delete(int id)
         {
-            throw new NotImplementedException();
+            using (HttpClient client = GetClient())
+            {
+                var response = await client.DeleteAsync(Url + id);
+                if (response.StatusCode != HttpStatusCode.OK)
+                    throw new Exception(response.StatusCode + " " + "Не удалось удалить департамент");
+            }
         }
 
-        public IEnumerable<Department> GetAll()
+        public async Task<Department> Get(int id)
         {
-            throw new NotImplementedException();
+            using (HttpClient client = GetClient())
+            {
+                var result = await client.GetAsync(Url + id.ToString());
+                if (result.StatusCode != System.Net.HttpStatusCode.OK)
+                    return null;
+                return JsonConvert.DeserializeObject<Department>(await result.Content.ReadAsStringAsync());
+            }
         }
 
-        public void Update(Department item)
+        public async Task<IEnumerable<Department>> GetAll()
         {
-            throw new NotImplementedException();
+            using (HttpClient client = GetClient())
+            {
+                var result = await client.GetAsync(Url);
+                if (result.StatusCode != System.Net.HttpStatusCode.OK)
+                    return null;
+                return JsonConvert.DeserializeObject<IEnumerable<Department>>(await result.Content.ReadAsStringAsync());
+            }
+        }
+
+        public async Task Update(Department item)
+        {
+            using (HttpClient client = GetClient())
+            {
+                var response = await client.PutAsync(Url + item.Id,
+                    new StringContent(
+                        JsonConvert.SerializeObject(item),
+                        Encoding.UTF8, "application/json"));
+
+                if (response.StatusCode != HttpStatusCode.OK)
+                    throw new Exception(response.StatusCode + " " + "Не удалось обновить департамент");
+            }
         }
     }
 }
