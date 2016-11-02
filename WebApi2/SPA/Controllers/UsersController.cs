@@ -16,7 +16,7 @@ namespace SPA.Controllers
 {
     public class UsersController : ApiController
     {
-        private UnitOfWork db = new UnitOfWork();
+        private IUnitOfWork db = new UnitOfWork();
 
         // GET: api/Users
         public async Task<IEnumerable<User>> GetUsers()

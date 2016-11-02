@@ -5,10 +5,10 @@ using System.Web;
 
 namespace SPA.Models
 {
-    interface IUnitOfWork:IDisposable
+   public interface IUnitOfWork:IDisposable
     {
-        UserRepository Users { get; }
-        DepartmentRepository Departments { get;}
+        IRepository<User> Users { get; }
+        IRepository<Department> Departments { get;}
         void Save();
     } 
 }

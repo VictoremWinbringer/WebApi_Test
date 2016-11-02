@@ -14,7 +14,7 @@ namespace SPA.Models
 {
     public class DepartmentsController : ApiController
     {
-        private UnitOfWork db = new UnitOfWork();
+        private IUnitOfWork db = new UnitOfWork();
 
         /// <summary>
         /// Получает списко департаментов

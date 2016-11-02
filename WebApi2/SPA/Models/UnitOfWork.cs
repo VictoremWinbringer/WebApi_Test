@@ -9,7 +9,7 @@ namespace SPA.Models
     {
      Lazy<DepartmentRepository> dr = new Lazy<DepartmentRepository>();
         Lazy<UserRepository> ur = new Lazy<UserRepository>();
-        public DepartmentRepository Departments
+        public IRepository<Department> Departments
         {
             get
             {
@@ -17,7 +17,7 @@ namespace SPA.Models
             }
         }
 
-        public UserRepository Users
+        public IRepository<User> Users
         {
             get
             {
