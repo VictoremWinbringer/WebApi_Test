@@ -8,9 +8,11 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
+using System.Web.Http.Cors;
 
 namespace WebApi2.Models
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class DepartmentsController : ApiController
     {
         private DContext db = new DContext();
