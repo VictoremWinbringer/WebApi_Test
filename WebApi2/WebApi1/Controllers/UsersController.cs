@@ -65,7 +65,7 @@ namespace WebApi1.Controllers
                 }
             }
 
-            return StatusCode(HttpStatusCode.NoContent);
+            return StatusCode(HttpStatusCode.OK);
         }
 
         // POST: api/Users
@@ -80,7 +80,7 @@ namespace WebApi1.Controllers
             db.Users.Add(user);
             db.SaveChanges();
 
-            return CreatedAtRoute("DefaultApi", new { id = user.Id }, user);
+            return Ok(user);
         }
 
         // DELETE: api/Users/5

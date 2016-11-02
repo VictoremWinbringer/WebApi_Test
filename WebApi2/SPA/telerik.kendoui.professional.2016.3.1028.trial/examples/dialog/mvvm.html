@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MVVM</title>
+    <meta charset="utf-8">
+    <link href="../content/shared/styles/examples-offline.css" rel="stylesheet">
+    <link href="../../styles/kendo.common.min.css" rel="stylesheet">
+    <link href="../../styles/kendo.rtl.min.css" rel="stylesheet">
+    <link href="../../styles/kendo.default.min.css" rel="stylesheet">
+    <link href="../../styles/kendo.default.mobile.min.css" rel="stylesheet">
+    <script src="../../js/jquery.min.js"></script>
+    <script src="../../js/jszip.min.js"></script>
+    <script src="../../js/kendo.all.min.js"></script>
+    <script src="../content/shared/js/console.js"></script>
+    <script>
+        
+    </script>
+    
+    
+</head>
+<body>
+    
+        <a class="offline-button" href="../index.html">Back</a>
+    
+    <div id="example">
+    <div class="demo-section k-content">
+        <div class="box-col" style="width: 340px">
+            <span class="configHead">Open or close the dialog</span>
+            <div data-role="dialog"
+                 data-title="Software Update"
+                 data-width="300"
+                 data-actions="[{text:'Skip this version', action: onSkip},{ text: 'Remind me later', action: onRemind },{ text: 'Install update', action: onInstall, primary: true }]"
+                 data-height="150"
+                 data-modal="false"
+                 data-content="<p>A new version of <strong>Kendo UI</strong> is available. Would you like to download and install it now?<p>"
+                 data-bind="visible: isVisible,
+                            events: { close: onClose},           
+                 ">
+            </div>
+        </div>
+        <div class="box-col console-section">
+            <h4>Console</h4>
+            <div class="console"></div>
+        </div>
+    </div>
+    <div class="box">
+        <div class="box-col" style="width: 340px">
+            <h4>Configuration</h4>
+            <div>
+                <button id="show" data-role="button" class="k-button k-primary" data-bind="click: show, enabled: isEnabled">Open the dialog</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        var viewModel = kendo.observable({
+            isVisible: true,
+            isClosable: true,
+            isEnabled: false,
+            onClose: function (e) {
+                this.set("isVisible", false);
+                this.set("isEnabled", true);
+            },
+            show: function (e) {
+                this.set("isVisible", true);
+                this.set("isEnabled", false);
+            },
+            
+        });
+        kendo.bind($("#example"), viewModel);
+
+        function onSkip(e) {
+            kendoConsole.log("Action :: Skip this version");
+        }
+
+        function onRemind(e) {
+            kendoConsole.log("Action :: Remind me later");
+        }
+
+        function onInstall(e) {
+            kendoConsole.log("Action :: Install update");
+        }
+        
+    </script>
+</div>
+
+
+    
+</body>
+</html>

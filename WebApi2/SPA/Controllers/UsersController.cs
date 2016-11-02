@@ -37,7 +37,8 @@ namespace SPA.Controllers
         }
 
         // PUT: api/Users/5
-        [ResponseType(typeof(void))]
+        [ResponseType(typeof(User))]
+        [HttpPut]
         public async Task<IHttpActionResult> PutUser(int id, User user)
         {
             if (!ModelState.IsValid)
@@ -60,22 +61,22 @@ namespace SPA.Controllers
                 return BadRequest(ex.Message);
 
             }
-
-
-            return StatusCode(HttpStatusCode.NoContent);
+            return Ok(user);
         }
 
         // POST: api/Users
-        [ResponseType(typeof(User))]
+      //  [ResponseType(typeof(User))]
+        [HttpPost]
         public async Task<IHttpActionResult> PostUser(User user)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            User u;
             try
             {
-                await db.Users.Create(user);
+               u = await db.Users.Create(user);
             }
             catch (Exception ex)
             {
@@ -84,11 +85,12 @@ namespace SPA.Controllers
             }
 
 
-            return CreatedAtRoute("DefaultApi", new { id = user.Id }, user);
+            return CreatedAtRoute("DefaultApi", new { id = u.Id }, u); //Ok(user);
         }
 
         // DELETE: api/Users/5
         [ResponseType(typeof(User))]
+        [HttpDelete]
         public async Task<IHttpActionResult> DeleteUser(int id)
         {
             User user = await db.Users.Get(id);

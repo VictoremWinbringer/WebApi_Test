@@ -10,7 +10,7 @@ namespace SPA.Models
     {
         Task<IEnumerable<T>> GetAll();
         Task<T> Get(int id);
-        Task Create(T item);
+        Task<T> Create(T item);
         Task Update(T item);
         Task Delete(int id);
     }

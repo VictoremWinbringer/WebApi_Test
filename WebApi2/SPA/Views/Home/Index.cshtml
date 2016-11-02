@@ -1,1 +1,93 @@
-﻿Тут будет контент
+﻿<div id="grid"></div>
+<script>
+    var remoteDataSource = new kendo.data.DataSource({
+        transport: {
+            read: {
+                url: "http://localhost:55918/api/users",
+                dataType: "json"
+            },
+            create: {
+                url: "http://localhost:55918/api/users",
+                dataType: "json",
+                type: "POST"
+            },
+            update: {
+                url: function (options) {
+                    console.log(options);
+                    console.log(options.models);
+                    console.log(options.model);
+                    return "http://localhost:55918/api/users/" + options.Id;
+                },
+                dataType: "json",
+                type: "PUT"
+            },
+            destroy: {
+                url: function (options) {
+                    return "http://localhost:55918/api/users/" + options.Id;
+                },
+                dataType: "json",
+                type: "DELETE"
+            }
+        },
+        schema: {
+            model: {
+                id: "Id",
+                fields: {
+                    Id: { editable: false, type: "number" },
+                    UserName: { validation: { required: true } },
+                    DepartmentId: { editable: true, type: "number" }
+                }
+            }
+        }
+    });
+    var remoteDataSource1 = new kendo.data.DataSource({
+        transport: {
+            read: {
+                url: "http://localhost:55918/api/departments",
+                dataType: "json"
+            }
+        },
+        schema: {
+            model: {
+                id: "Id",
+                fields: {
+                    Id: { editable: false, type: "number" },
+                    Title: { editable: false }
+                }
+            }
+        }
+    });
+    $('#grid').kendoGrid({
+        dataSource: remoteDataSource,
+        height: 500,
+        toolbar: [{name:"create", text: "Add"}],
+        editable: "popup",
+        columns: [
+                {
+                    field: "Id",
+                    title: "#"
+                },
+                {
+                    field: "UserName",
+                    title: "Username"
+                },
+                 {
+                     field: "DepartmentId",
+                     title: "Department",
+                     editor: function(container, options) {
+                         var input = $("<input/>");
+                         input.attr("name", options.field);                        
+                         input.appendTo(container);
+                         input.kendoDropDownList({
+                             dataTextField: "Title",
+                             dataValueField: "Id",
+                             dataSource: remoteDataSource1
+                         });
+                     }
+                 } ,
+                {
+                    command: ["edit","destroy"]
+                }
+            ]
+    });
+</script>

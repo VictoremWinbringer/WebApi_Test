@@ -21,7 +21,7 @@ namespace SPA.Models
             return client;
         }
 
-        public async Task Create(Department item)
+        public async Task<Department> Create(Department item)
         {
             using (HttpClient client = GetClient())
             {
@@ -33,6 +33,7 @@ namespace SPA.Models
 
                 if (response.StatusCode != HttpStatusCode.OK)
                     throw new Exception(response.StatusCode + " " + "Не удалось создать Департамент");
+             return   JsonConvert.DeserializeObject<Department>(await response.Content.ReadAsStringAsync());
             }
         }
 
@@ -63,7 +64,7 @@ namespace SPA.Models
             {
                 var result = await client.GetAsync(Url);
                 if (result.StatusCode != System.Net.HttpStatusCode.OK)
-                    return null;
+                    return new List<Department>();
                 return JsonConvert.DeserializeObject<IEnumerable<Department>>(await result.Content.ReadAsStringAsync());
             }
         }

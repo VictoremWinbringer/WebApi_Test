@@ -17,11 +17,11 @@ namespace SPA.Models
         private HttpClient GetClient()
         {
             HttpClient client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Accept", "application/json");
+            client.DefaultRequestHeaders.Add("Accept", "application/js3on");
             return client;
         }
 
-        public async Task Create(User item)
+        public async Task<User> Create(User item)
         {
             using (HttpClient client = GetClient())
             {
@@ -29,10 +29,9 @@ namespace SPA.Models
                     new StringContent(
                         JsonConvert.SerializeObject(item),
                         Encoding.UTF8, "application/json"));
-
-
                 if (response.StatusCode != HttpStatusCode.OK)
                     throw new Exception(response.StatusCode + " " + "Не удалось создать пользователя");
+                return JsonConvert.DeserializeObject<User>(await response.Content.ReadAsStringAsync());
             }
         }
 
@@ -63,7 +62,7 @@ namespace SPA.Models
             {
                 var result = await client.GetAsync(Url);
                 if (result.StatusCode != System.Net.HttpStatusCode.OK)
-                    return null;
+                    return new List<User>();
                 return JsonConvert.DeserializeObject<IEnumerable<User>>(await result.Content.ReadAsStringAsync());
             }
         }
