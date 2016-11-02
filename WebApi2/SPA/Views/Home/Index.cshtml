@@ -1,5 +1,13 @@
 ﻿<div id="grid"></div>
 <script>
+    function onChange(arg) {
+        var selected = $.map(this.select(), function (item) {
+            return $(item).text();
+        });
+
+        console.log("Selected: " + selected.length + " item(s), [" + selected.join(", ") + "]");
+    }
+
     var remoteDataSource = new kendo.data.DataSource({
         transport: {
             read: {
@@ -62,6 +70,8 @@
         height: 500,
         toolbar: [{name:"create", text: "Add"}],
         editable: "popup",
+        change: onChange,
+        selectable: "row",
         columns: [
                 {
                     field: "Id",

@@ -503,11 +503,11 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="telerik.kendoui.professional.2016.3.1028.trial\js\jquery.min.js" />
-    <Content Include="telerik.kendoui.professional.2016.3.1028.trial\js\kendo.all.min.js" />
-    <Content Include="telerik.kendoui.professional.2016.3.1028.trial\styles\kendo.bootstrap.min.css" />
-    <Content Include="telerik.kendoui.professional.2016.3.1028.trial\styles\kendo.bootstrap.mobile.min.css" />
-    <Content Include="telerik.kendoui.professional.2016.3.1028.trial\styles\kendo.common.min.css" />
+    <Content Include="Kendo\js\jquery.min.js" />
+    <Content Include="Kendo\js\kendo.all.min.js" />
+    <Content Include="Kendo\styles\kendo.bootstrap.min.css" />
+    <Content Include="Kendo\styles\kendo.bootstrap.mobile.min.css" />
+    <Content Include="Kendo\styles\kendo.common.min.css" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -529,11 +529,11 @@
   <ItemGroup>
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
-    <Content Include="telerik.kendoui.professional.2016.3.1028.trial\styles\kendo.bootstrap.min.css.map" />
-    <Content Include="telerik.kendoui.professional.2016.3.1028.trial\styles\kendo.bootstrap.mobile.min.css.map" />
-    <Content Include="telerik.kendoui.professional.2016.3.1028.trial\styles\kendo.common.min.css.map" />
-    <Content Include="telerik.kendoui.professional.2016.3.1028.trial\js\kendo.all.min.js.map" />
-    <Content Include="telerik.kendoui.professional.2016.3.1028.trial\js\jquery.min.map" />
+    <Content Include="Kendo\styles\kendo.bootstrap.min.css.map" />
+    <Content Include="Kendo\styles\kendo.bootstrap.mobile.min.css.map" />
+    <Content Include="Kendo\styles\kendo.common.min.css.map" />
+    <Content Include="Kendo\js\kendo.all.min.js.map" />
+    <Content Include="Kendo\js\jquery.min.map" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
