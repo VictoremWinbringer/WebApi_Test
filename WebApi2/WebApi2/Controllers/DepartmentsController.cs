@@ -12,7 +12,7 @@ using System.Web.Http.Cors;
 
 namespace WebApi2.Models
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
+    [EnableCors(origins: "http://localhost:55918/", headers: "*", methods: "*")]
     public class DepartmentsController : ApiController
     {
         private DContext db = new DContext();

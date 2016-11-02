@@ -9,7 +9,7 @@ using WebApi1.Models;
 
 namespace WebApi1.Controllers
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
+    [EnableCors(origins: "http://localhost:55918/", headers: "*", methods: "*")]
     public class UsersController : ApiController
     {
         private UserContext db = new UserContext();
