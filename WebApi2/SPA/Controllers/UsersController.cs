@@ -36,7 +36,7 @@ namespace SPA.Controllers
             var u1 = Mapper.Map<IEnumerable<User>, IEnumerable<UserViewModel>>(u);
             foreach (var item in u1)
             {
-                item.Department = d.FirstOrDefault(x => x.Id == item.Id)?.Title;
+                item.Department = d.FirstOrDefault(x => x.Id == item.DepartmentId)?.Title;
             }
             return u1; 
         }
@@ -52,7 +52,7 @@ namespace SPA.Controllers
             }
             var d =await db.Departments.Get(user.DepartmentId);
             var u = Mapper.Map<UserViewModel>(user);
-            u.Department = d.Title;
+            u.Department = d?.Title;
             return Ok(u);
         }
 
@@ -75,13 +75,15 @@ namespace SPA.Controllers
             try
             {
                 await db.Users.Update(Mapper.Map<User>(user));
+                var d = await db.Departments.Get(user.DepartmentId);
+                user.Department = d?.Title;
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
 
             }
-            return Ok(Mapper.Map<UserViewModel>(user));
+            return Ok(user);
         }
 
         // POST: api/Users
@@ -93,19 +95,21 @@ namespace SPA.Controllers
             {
                 return BadRequest(ModelState);
             }
-            User u;
+            UserViewModel uv;
             try
             {
-               u = await db.Users.Create(Mapper.Map<User>(user));
+              var u = await db.Users.Create(Mapper.Map<User>(user));
+              var d = await db.Departments.Get(user.DepartmentId);
+                uv = Mapper.Map<UserViewModel>(u);
+                uv.Department = d?.Title;
             }
             catch (Exception ex)
             {
 
                 return BadRequest(ex.Message);
             }
-
-
-            return CreatedAtRoute("DefaultApi", new { id = u.Id }, Mapper.Map<UserViewModel>(u)); //Ok(user);
+        
+            return CreatedAtRoute("DefaultApi", new { id = uv?.Id }, uv); //Ok(user);
         }
 
         // DELETE: api/Users/5
