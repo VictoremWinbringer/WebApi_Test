@@ -11,6 +11,7 @@ using System.Web.Http.Description;
 using SPA.Models;
 using System.Web;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace SPA.Controllers
 {
@@ -18,14 +19,30 @@ namespace SPA.Controllers
     {
         private IUnitOfWork db = new UnitOfWork();
 
-        // GET: api/Users
-        public async Task<IEnumerable<User>> GetUsers()
+        public UsersController()
         {
-            return await db.Users.GetAll();
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<User, UserViewModel>()
+.ForMember("Department", opt => opt.Ignore());
+                cfg.CreateMap<UserViewModel, User>();
+            }); //opt.MapFrom(x=> db.Departments.Get(x.DepartmentId).Result.Title)));
+        }
+        // GET: api/Users
+        public async Task<IEnumerable<UserViewModel>> GetUsers()
+        {
+            var u =await db.Users.GetAll();
+            var d = await db.Departments.GetAll();
+            var u1 = Mapper.Map<IEnumerable<User>, IEnumerable<UserViewModel>>(u);
+            foreach (var item in u1)
+            {
+                item.Department = d.FirstOrDefault(x => x.Id == item.Id)?.Title;
+            }
+            return u1; 
         }
 
         // GET: api/Users/5
-        [ResponseType(typeof(User))]
+        [ResponseType(typeof(UserViewModel))]
         public async Task<IHttpActionResult> GetUser(int id)
         {
             User user = await db.Users.Get(id);
@@ -33,13 +50,16 @@ namespace SPA.Controllers
             {
                 return NotFound();
             }
-            return Ok(user);
+            var d =await db.Departments.Get(user.DepartmentId);
+            var u = Mapper.Map<UserViewModel>(user);
+            u.Department = d.Title;
+            return Ok(u);
         }
 
         // PUT: api/Users/5
-        [ResponseType(typeof(User))]
+        [ResponseType(typeof(UserViewModel))]
         [HttpPut]
-        public async Task<IHttpActionResult> PutUser(int id, User user)
+        public async Task<IHttpActionResult> PutUser(int id, UserViewModel user)
         {
             if (!ModelState.IsValid)
             {
@@ -54,20 +74,20 @@ namespace SPA.Controllers
 
             try
             {
-                await db.Users.Update(user);
+                await db.Users.Update(Mapper.Map<User>(user));
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
 
             }
-            return Ok(user);
+            return Ok(Mapper.Map<UserViewModel>(user));
         }
 
         // POST: api/Users
       //  [ResponseType(typeof(User))]
         [HttpPost]
-        public async Task<IHttpActionResult> PostUser(User user)
+        public async Task<IHttpActionResult> PostUser(UserViewModel user)
         {
             if (!ModelState.IsValid)
             {
@@ -76,7 +96,7 @@ namespace SPA.Controllers
             User u;
             try
             {
-               u = await db.Users.Create(user);
+               u = await db.Users.Create(Mapper.Map<User>(user));
             }
             catch (Exception ex)
             {
@@ -85,11 +105,11 @@ namespace SPA.Controllers
             }
 
 
-            return CreatedAtRoute("DefaultApi", new { id = u.Id }, u); //Ok(user);
+            return CreatedAtRoute("DefaultApi", new { id = u.Id }, Mapper.Map<UserViewModel>(u)); //Ok(user);
         }
 
         // DELETE: api/Users/5
-        [ResponseType(typeof(User))]
+        [ResponseType(typeof(UserViewModel))]
         [HttpDelete]
         public async Task<IHttpActionResult> DeleteUser(int id)
         {
@@ -108,7 +128,7 @@ namespace SPA.Controllers
 
                 return BadRequest(ex.Message);
             }
-            return Ok(user);
+            return Ok(Mapper.Map<UserViewModel>(user));
         }
 
 

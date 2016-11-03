@@ -1,12 +1,39 @@
 ﻿<div id="grid"></div>
+<div id="grid1">
+    <h4>Users</h4>
+    <div data-role="grid"
+         data-selectable="row"
+         data-editable="popup"
+         data-toolbar="[{ name: 'create', text: 'Add' },{ name: 'update', text: 'Edit'}, { name: 'destroy', text: 'Delete' } ]"
+         data-columns="[{ field: 'Id', width: 270 , title:'#' },
+          {  'field': 'UserName', 'title': 'Username'   },
+          {  'field': 'DepartmentId', 'title': 'Department', template: '${Department}'   }]"
+         data-bind="source: users ,
+         events:{
+         change:changed
+         }"
+         style="height: 200px"></div>
+</div>
+<script src="~/Kendo/js/jquery.min.js"></script>
+<script src="~/Kendo/js/kendo.all.min.js"></script>
 <script>
-    function onChange(arg) {
-        var selected = $.map(this.select(), function (item) {
-            return $(item).text();
-        });
+    var User = kendo.data.Model.define({
+        id: "Id",
+        fields: {
+            Id: { editable: false, type: "number" },
+            UserName: { validation: { required: true } },
+            DepartmentId: { editable: true, type: "number" },
+            Department:{type:'string'}
+        }
+    });
 
-        console.log("Selected: " + selected.length + " item(s), [" + selected.join(", ") + "]");
-    }
+    var Dpmt = kendo.data.Model.define({
+        id: "Id",
+        fields: {
+            Id: { editable: false, type: "number" },
+            Title: { editable: false }
+        }
+    });
 
     var remoteDataSource = new kendo.data.DataSource({
         transport: {
@@ -38,16 +65,11 @@
             }
         },
         schema: {
-            model: {
-                id: "Id",
-                fields: {
-                    Id: { editable: false, type: "number" },
-                    UserName: { validation: { required: true } },
-                    DepartmentId: { editable: true, type: "number" }
-                }
-            }
+            model: User
         }
     });
+
+
     var remoteDataSource1 = new kendo.data.DataSource({
         transport: {
             read: {
@@ -56,21 +78,38 @@
             }
         },
         schema: {
-            model: {
-                id: "Id",
-                fields: {
-                    Id: { editable: false, type: "number" },
-                    Title: { editable: false }
-                }
-            }
+            model: Dpmt
         }
     });
+
+
+    var viewModel = kendo.observable({
+        isVisible: true,
+        users: remoteDataSource,
+        departments: remoteDataSource1,
+        changed: function (arg) {
+            var selected = $.map(arg.sender.select(), function (item) {
+                return $(item).text();
+            });
+            console.log(selected[0]);
+        }
+    });
+
+    kendo.bind($("#grid1"), viewModel);
+
     $('#grid').kendoGrid({
         dataSource: remoteDataSource,
         height: 500,
-        toolbar: [{name:"create", text: "Add"}],
+        toolbar: [{ name: "create", text: "Add" }],
         editable: "popup",
-        change: onChange,
+        change: function (arg) {
+            console.log(arg);
+            console.log(this.select()[0]);
+            //var selected = $.map(this.select(), function (item) {
+            //    return $(item).text();
+            //});
+            //console.log("Selected: " + selected.length + " item(s), [" + selected.join(", ") + "]");
+        },
         selectable: "row",
         columns: [
                 {
@@ -84,9 +123,9 @@
                  {
                      field: "DepartmentId",
                      title: "Department",
-                     editor: function(container, options) {
+                     editor: function (container, options) {
                          var input = $("<input/>");
-                         input.attr("name", options.field);                        
+                         input.attr("name", options.field);
                          input.appendTo(container);
                          input.kendoDropDownList({
                              dataTextField: "Title",
@@ -94,10 +133,14 @@
                              dataSource: remoteDataSource1
                          });
                      }
-                 } ,
+                 },
+                  {
+                      field: "Department",
+                      title: "Department"
+                  },
                 {
-                    command: ["edit","destroy"]
+                    command: ["edit", "destroy"]
                 }
-            ]
+        ]
     });
 </script>
