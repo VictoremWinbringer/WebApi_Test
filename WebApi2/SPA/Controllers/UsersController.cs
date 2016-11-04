@@ -19,14 +19,16 @@ namespace SPA.Controllers
     {
         private IUnitOfWork db = new UnitOfWork();
 
+
         public UsersController()
         {
             Mapper.Initialize(cfg =>
             {
                 cfg.CreateMap<User, UserViewModel>()
-.ForMember("Department", opt => opt.Ignore());
+.ForMember("Department",opt=> opt.Ignore());
+
                 cfg.CreateMap<UserViewModel, User>();
-            }); //opt.MapFrom(x=> db.Departments.Get(x.DepartmentId).Result.Title)));
+            }); 
         }
         // GET: api/Users
         public async Task<IEnumerable<UserViewModel>> GetUsers()
