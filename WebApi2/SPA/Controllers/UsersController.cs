@@ -17,30 +17,30 @@ namespace SPA.Controllers
 {
     public class UsersController : ApiController
     {
-        private IUnitOfWork db = new UnitOfWork();
+        private IUnitOfWork db;
 
-
-        public UsersController()
+        public UsersController(IUnitOfWork db)
         {
+            this.db = db;
             Mapper.Initialize(cfg =>
             {
                 cfg.CreateMap<User, UserViewModel>()
-.ForMember("Department",opt=> opt.Ignore());
+.ForMember("Department", opt => opt.Ignore());
 
                 cfg.CreateMap<UserViewModel, User>();
-            }); 
+            });
         }
         // GET: api/Users
         public async Task<IEnumerable<UserViewModel>> GetUsers()
         {
-            var u =await db.Users.GetAll();
+            var u = await db.Users.GetAll();
             var d = await db.Departments.GetAll();
             var u1 = Mapper.Map<IEnumerable<User>, IEnumerable<UserViewModel>>(u);
             foreach (var item in u1)
             {
                 item.Department = d.FirstOrDefault(x => x.Id == item.DepartmentId)?.Title;
             }
-            return u1; 
+            return u1;
         }
 
         // GET: api/Users/5
@@ -52,7 +52,7 @@ namespace SPA.Controllers
             {
                 return NotFound();
             }
-            var d =await db.Departments.Get(user.DepartmentId);
+            var d = await db.Departments.Get(user.DepartmentId);
             var u = Mapper.Map<UserViewModel>(user);
             u.Department = d?.Title;
             return Ok(u);
@@ -89,7 +89,7 @@ namespace SPA.Controllers
         }
 
         // POST: api/Users
-      //  [ResponseType(typeof(User))]
+        //  [ResponseType(typeof(User))]
         [HttpPost]
         public async Task<IHttpActionResult> PostUser(UserViewModel user)
         {
@@ -100,8 +100,8 @@ namespace SPA.Controllers
             UserViewModel uv;
             try
             {
-              var u = await db.Users.Create(Mapper.Map<User>(user));
-              var d = await db.Departments.Get(user.DepartmentId);
+                var u = await db.Users.Create(Mapper.Map<User>(user));
+                var d = await db.Departments.Get(user.DepartmentId);
                 uv = Mapper.Map<UserViewModel>(u);
                 uv.Department = d?.Title;
             }
@@ -110,7 +110,7 @@ namespace SPA.Controllers
 
                 return BadRequest(ex.Message);
             }
-        
+
             return CreatedAtRoute("DefaultApi", new { id = uv?.Id }, uv); //Ok(user);
         }
 
